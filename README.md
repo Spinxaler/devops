@@ -17,4 +17,15 @@
 ![изображение](https://user-images.githubusercontent.com/16610642/154835018-d5befb34-b9af-466d-a126-38bcd2d18eb0.png)
 
 5.
+![изображение](https://user-images.githubusercontent.com/16610642/154838088-8d28c0ff-3604-41e7-8bf1-df39b7d096ff.png)
+
+6.
+
+![изображение](https://user-images.githubusercontent.com/16610642/154838453-c029fd69-cace-4d4f-b181-10fae4dbec7e.png)
+
+7.
+
+Собрал 10 пакетов, 100 много для скрина ))
+
+![изображение](https://user-images.githubusercontent.com/16610642/154838769-760bfcde-9e2d-45eb-b85a-13db8d21a53f.png)
 
