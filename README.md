@@ -1,3 +1,11 @@
+Вторая доработка Вопроса № 6 
+
+![изображение](https://user-images.githubusercontent.com/16610642/156977263-905b0daa-4c05-4618-86e6-ca878ddb4e98.png)
+
+
+![изображение](https://user-images.githubusercontent.com/16610642/156975550-51a0ddee-3b5a-44d0-a158-73cbf5df0c50.png)
+
+
 Доработка Вопроса № 6 
 
 ![изображение](https://user-images.githubusercontent.com/16610642/155875624-18665575-157d-4bc8-ac51-d8d64d59bd8b.png)
