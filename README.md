@@ -17,11 +17,19 @@ Push более предпочтителен, так как запуск сце�
 
 ## Обязательная задача 3
 
-![image](https://user-images.githubusercontent.com/16610642/163668109-1adc40b3-3fbf-4540-b1d3-241d8d70af95.png)
-
-![image](https://user-images.githubusercontent.com/16610642/163668195-b0e8e97c-5c8e-4363-bdf7-73b5bf43849a.png)
-
+ansible 2.7.7
+     config file = /etc/ansible/ansible.cfg
+     configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+     ansible python module location = /usr/lib/python3/dist-packages/ansible
+     executable location = /usr/bin/ansible
+     python version = 3.5.3 (default, Apr 26 2021, 11:58:09) [GCC 6.3.0 20170516]
  
+ Vagrant 2.0.2
+ 
+ Oracle VM VirtualBox VM Selector v6.1.28
+(C) 2005-2021 Oracle Corporation
+All rights reserved.
+No special options.
 
 
 
