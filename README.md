@@ -10,6 +10,7 @@
 
 ## Обязательная задача 2
 
+![image](https://user-images.githubusercontent.com/16610642/164468344-9a9e5ef6-1b59-44ad-99d9-04e9d8b14264.png)
 
 
 
