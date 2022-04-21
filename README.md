@@ -16,7 +16,12 @@
 
 ## Обязательная задача 3
 
+![image](https://user-images.githubusercontent.com/16610642/164541568-9e0c66fb-6cc1-4957-8e0e-67824fa1b9b4.png)
 
+## Небязательная задача 4
+
+![image](https://user-images.githubusercontent.com/16610642/164541685-793e7cfe-555d-42f4-9d25-fbde4665cf13.png)
+![image](https://user-images.githubusercontent.com/16610642/164541861-bca2df65-fba8-4c35-aa36-9f1ac923d75b.png)
 
 
 
