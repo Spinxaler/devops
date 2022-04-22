@@ -19,8 +19,14 @@ Overlay сеть это виртуальная подсеть создаваем
 ![image](https://user-images.githubusercontent.com/16610642/164756152-d52eb2fe-9c5f-4480-8e85-6895c414f372.png)
 
 ## Обязательная задача 3
+![image](https://user-images.githubusercontent.com/16610642/164756731-6451638d-34e5-44a4-bf50-1338e07c479b.png)
 
 ## Небязательная задача 4
+docker swarm update --autolock=true 
+
+Команда для включения автоблокировки swarm. Это способ защиты ключа TLS, которым шифруется связь между узлами и журнал Raft. Если Swarm заблокирован, то при перезапуске Docker сначала потребуется разблокировать Swarm ключом, который был в выводе команды. Заблокированный Swarm не даст запустить или перезапустить службу. 
+
+![image](https://user-images.githubusercontent.com/16610642/164757466-dba04a71-75a9-447f-a33c-edfb6207b377.png)
 
 
 
