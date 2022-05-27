@@ -117,6 +117,11 @@ root@node01:/home/centos# docker exec -i postgres_pg_db_1 sh -c 'pg_dump -U post
 
 Ответ: Нужно задать ограничение UNIQUE для столбца
 
-
+```Bash
+test_database=# CREATE UNIQUE INDEX CONCURRENTLY ix_title1 ON orders_1 (title);
+CREATE INDEX
+test_database=# CREATE UNIQUE INDEX CONCURRENTLY ix_title2 ON orders_2 (title);
+CREATE INDEX
+```
 
 
