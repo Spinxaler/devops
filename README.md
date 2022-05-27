@@ -101,7 +101,12 @@ test_database=# insert into orders (id, title, price) select * from orders_old;
 
 
 Ответ: Да можно, нужно спроектировать таблицу как секционнированную.
+Дополнение: Не до понял изначально что сделал )).  Получаеться то что я сделал выше это и есть "секционнированние" а нужно было сделать "шардирование" пример шардирования и приложил ниже, надеюсь теперь всё верно.
 
+```Bash
+CREATE TABLE orders_less499 ( CHECK ( price < 499 )) INHERITS (orders);
+CREATE TABLE orders_more499 ( CHECK ( price >= 499 )) INHERITS (orders);
+```
 
 ## Задача 4
 
@@ -118,9 +123,9 @@ root@node01:/home/centos# docker exec -i postgres_pg_db_1 sh -c 'pg_dump -U post
 Ответ: Нужно задать ограничение UNIQUE для столбца
 
 ```Bash
-test_database=# CREATE UNIQUE INDEX CONCURRENTLY ix_title1 ON orders_1 (title);
+test_database=# CREATE UNIQUE INDEX CONCURRENTLY ix_title1 ON orders_less499 (title);
 CREATE INDEX
-test_database=# CREATE UNIQUE INDEX CONCURRENTLY ix_title2 ON orders_2 (title);
+test_database=# CREATE UNIQUE INDEX CONCURRENTLY ix_title2 ON orders_more499 (title);
 CREATE INDEX
 ```
 
