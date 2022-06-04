@@ -1,129 +1,86 @@
-# Домашнее задание к занятию "6.4. PostgreSQL"
+# Домашнее задание к занятию "6.6. Troubleshooting"
 
 ## Задача 1
 
-> Используя docker поднимите инстанс PostgreSQL (версию 13). Данные БД сохраните в volume.
+Перед выполнением задания ознакомьтесь с документацией по [администрированию MongoDB](https://docs.mongodb.com/manual/administration/).
 
-```Bash 
-version: '3.1'
+Пользователь (разработчик) написал в канал поддержки, что у него уже 3 минуты происходит CRUD операция в MongoDB и её нужно прервать.
 
-volumes:
-  pg_db: {}
-  pg_backup: { }
+Вы как инженер поддержки решили произвести данную операцию:
 
-services:
-  pg_db:
-    image: postgres:13
-    restart: always
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
-    volumes:
-      - pg_db:/var/lib/postgresql/data
-      - pg_backup:  /var/lib/postgresql/backup
-    ports:
-      - ${POSTGRES_PORT:-5432}:5432
-```
+напишите список операций, которые вы будете производить для остановки запроса пользователя
+предложите вариант решения проблемы с долгими (зависающими) запросами в MongoDB
 
-> вывода списка БД
 ```Bash
-\l
+       db.currentOp()
+       db.killOp(<opId>)
 ```
-> подключения к БД
+Вариант решения проблемы с долгими (зависающими) запросами в MongoDB:
+
 ```Bash
-\c
-```
-> вывода списка таблиц
-```Bash
-\d
-```
-> вывода описания содержимого таблиц
-```Bash
-\d $TABLE
-```
-> выхода из psql
-```Bash
-\q
+перестроить существующие индексы или можно ограничить максимальное время на выполнение задачи, например 3-мя минутами
 ```
 
 ## Задача 2
+Перед выполнением задания познакомьтесь с документацией по [Redis latency troobleshooting](https://redis.io/topics/latency).
 
-> Используя `psql` создайте БД `test_database`.
+Вы запустили инстанс Redis для использования совместно с сервисом, который использует механизм TTL. Причем отношение количества записанных key-value значений к количеству истёкших значений есть величина постоянная и увеличивается пропорционально количеству реплик сервиса.
 
-```Bash
-postgres=# CREATE DATABASE test_database;
-CREATE DATABASE
-```
-> Восстановите бэкап БД в `test_database`.
+При масштабировании сервиса до N реплик вы увидели, что:
 
-```Bash
-psql -U postgres -f ./pg_backup.sql test_database
-```
-
-> Подключитесь к восстановленной БД и проведите операцию ANALYZE для сбора статистики по таблице.
+сначала рост отношения записанных значений к истекшим
+Redis блокирует операции записи
+Как вы думаете, в чем может быть проблема?
 
 ```Bash
-postgres=# \c test_database
-test_database=# ANALYZE VERBOSE public.orders;
-INFO:  analyzing "public.orders"
-INFO:  "orders": scanned 1 of 1 pages, containing 8 live rows and 0 dead rows; 8 rows in sample, 8 estimated total rows
+Пямять забилась истекшими ключами, которые еще не удалились. Redis заблокировался, чтобы вывести из БД удаленные ключи и снизить их количество менее чем 25%.
 ```
 
-Используя таблицу [pg_stats](https://postgrespro.ru/docs/postgresql/12/view-pg-stats), найдите столбец таблицы `orders` 
-с наибольшим средним значением размера элементов в байтах.
-
-```Bash
-test_database=# select avg_width from pg_stats where tablename='orders';
- avg_width 
------------
-         4
-        16
-         4
-```
 ## Задача 3
+Перед выполнением задания познакомьтесь с документацией по [Common Mysql errors](https://dev.mysql.com/doc/refman/8.0/en/common-errors.html).
 
-Архитектор и администратор БД выяснили, что ваша таблица orders разрослась до невиданных размеров и
-поиск по ней занимает долгое время. Вам, как успешному выпускнику курсов DevOps в нетологии предложили
-провести разбиение таблицы на 2 (шардировать на orders_1 - price>499 и orders_2 - price<=499).
+Вы подняли базу данных MySQL для использования в гис-системе. При росте количества записей, в таблицах базы, пользователи начали жаловаться на ошибки вида:
 
-Предложите SQL-транзакцию для проведения данной операции.
+InterfaceError: (InterfaceError) 2013: Lost connection to MySQL server during query u'SELECT..... '
+Как вы думаете, почему это начало происходить и как локализовать проблему?
+
+Какие пути решения данной проблемы вы можете предложить?
 
 ```Bash
-test_database=# alter table orders rename to orders_old;
-test_database=# create table orders (id integer, title varchar(80), price integer) partition by range(price);
-test_database=# create table orders_less499 partition of orders for values from (0) to (499);
-test_database=# create table orders_more499 partition of orders for values from (499) to (999999999);
-test_database=# insert into orders (id, title, price) select * from orders_old;
+Скорее всего из-за увеличения размера таблицы время выборки данных превышает значение net_read_timeout (по умолчанию 30 секунд).
+Сервер справляется с возросшей нагрузкой запросов и Drop соединения.
 ```
 
-Можно ли было изначально исключить "ручное" разбиение при проектировании таблицы orders?
-
-
-Ответ: Да можно, нужно спроектировать таблицу как секционнированную.
-> Дополнение: Не до понял изначально что сделал )).  Получаеться то что я сделал выше это и есть "секционнированние" а нужно было сделать "шардирование" пример шардирования я приложил ниже, надеюсь теперь всё верно. Спасибо за поправку.
+Пути решения проблемы:
 
 ```Bash
-CREATE TABLE orders_less499 ( CHECK ( price < 499 )) INHERITS (orders);
-CREATE TABLE orders_more499 ( CHECK ( price >= 499 )) INHERITS (orders);
+- добавить ресурсов или добавить маштабирование сервиса.
+- увеличить значение параметра net_read_timeout.
+- создать индексы ускорения времени выполнения запросов
 ```
 
 ## Задача 4
 
-> Используя утилиту `pg_dump` создайте бекап БД `test_database`.
+Перед выполнением задания ознакомтесь со статьей [Common PostgreSQL errors](https://www.percona.com/blog/2020/06/05/10-common-postgresql-errors/) из блога Percona.
+
+Вы решили перевести гис-систему из задачи 3 на PostgreSQL, так как прочитали в документации, что эта СУБД работает с большим объемом данных лучше, чем MySQL.
+
+После запуска пользователи начали жаловаться, что СУБД время от времени становится недоступной. В dmesg вы видите, что:
+
+postmaster invoked oom-killer
+
+Как вы думаете, что происходит?
 
 ```Bash
-root@node01:/home/centos# docker exec -i postgres_pg_db_1 sh -c 'pg_dump -U postgres  > \
--d test_database > /var/lib/postgresql/backup/test_database_bckp.sql'
+Закончилась память на сервере т.к. запустился oom-killer. 
 ```
-
-Как бы вы доработали бэкап-файл, чтобы добавить уникальность значения столбца `title` для таблиц `test_database`?
-
-
-Ответ: Нужно задать ограничение UNIQUE для столбца
+Как бы вы решили данную проблему?
 
 ```Bash
-test_database=# ALTER TABLE test_database ADD CONSTRAINT unique_orders UNIQUE (title);
+- увеличить объем оперативной памяти
+- установить ограничение в настройках PostgreSQL на использование ресурсов хоста, Например
+work_mem
+shared_buffers
+maintenance_work_mem
+effective_cache_size
 ```
-
-
